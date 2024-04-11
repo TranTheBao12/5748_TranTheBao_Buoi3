@@ -25,7 +25,7 @@ namespace _4743_TranNhatAnhThuan_Buoi3.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> Add(Product product, IFormFile imageUrl)
+        public async Task<IActionResult> Add(Product product, IFormFile imageUrl, List<IFormFile> images)
         {
             
             if (ModelState.IsValid)
@@ -34,6 +34,13 @@ namespace _4743_TranNhatAnhThuan_Buoi3.Controllers
                 {
                     // Lưu hình ảnh đại diện
                     product.ImageUrl = await SaveImage(imageUrl);
+                }
+                product.Images = new List<ProductImage>();
+
+                foreach (var image in images)
+                {
+                    var imageUrl1 = await SaveImage(image);
+                    product.Images.Add(new ProductImage { Url= imageUrl1 });
                 }
 
                 await _productRepository.AddAsync(product);
@@ -60,6 +67,7 @@ namespace _4743_TranNhatAnhThuan_Buoi3.Controllers
             {
                 return NotFound();
             }
+            ViewBag.CategoryName = product.Category.Name;
             return View(product);
         }
         public async Task<IActionResult> Update(int id)
@@ -70,21 +78,40 @@ namespace _4743_TranNhatAnhThuan_Buoi3.Controllers
                 return NotFound();
             }
             var categories = await _categoryRepository.GetAllAsync();
-            ViewBag.Categories = new SelectList(categories, "Id", "Name",product.CategoryId);
+            ViewBag.Categories = new SelectList(categories, "Id", "Name", product.CategoryId);
             return View(product);
         }
         [HttpPost]
-        public async Task<IActionResult> Update(int id, Product product)
+        public async Task<IActionResult> Update(int id, Product product, IFormFile imageUrl, List<IFormFile> images)
         {
             if (id != product.Id)
             {
                 return NotFound();
             }
+
             if (ModelState.IsValid)
             {
-                await _productRepository.UpdateAsync(product);
+                if (imageUrl != null)
+                {
+                    // Lưu hình ảnh đại diện
+                    product.ImageUrl = await SaveImage(imageUrl);
+                }
+
+                product.Images = new List<ProductImage>();
+
+                foreach (var image in images)
+                {
+                    var imageUrl1 = await SaveImage(image);
+                    product.Images.Add(new ProductImage { Url = imageUrl1 });
+                }
+
+                await _productRepository.UpdateAsync(product, imageUrl);
                 return RedirectToAction(nameof(Index));
             }
+
+            // Nếu ModelState không hợp lệ, hiển thị form với dữ liệu đã nhập
+            var categories = await _categoryRepository.GetAllAsync();
+            ViewBag.Categories = new SelectList(categories, "Id", "Name", product.CategoryId); // Sử dụng lại ViewBag.Categories
             return View(product);
         }
         public async Task<IActionResult> Delete(int id)

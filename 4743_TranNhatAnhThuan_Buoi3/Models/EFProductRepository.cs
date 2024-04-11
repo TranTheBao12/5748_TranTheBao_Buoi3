@@ -15,14 +15,17 @@ namespace _4743_TranNhatAnhThuan_Buoi3.Models
         }
         public async Task<Product> GetByIdAsync(int id)
         {
-            return await _context.Products.FindAsync(id);
+            return await _context.Products
+                    .Include(x => x.Category)
+                    .Include(x => x.Images)  // Sử dụng Include để load các hình ảnh
+                    .FirstOrDefaultAsync(x => x.Id == id);
         }
         public async Task AddAsync(Product product)
         {
             _context.Products.Add(product);
             await _context.SaveChangesAsync();
         }
-        public async Task UpdateAsync(Product product)
+        public async Task UpdateAsync(Product product, IFormFile imageUrl)
         {
             _context.Products.Update(product);
             await _context.SaveChangesAsync();

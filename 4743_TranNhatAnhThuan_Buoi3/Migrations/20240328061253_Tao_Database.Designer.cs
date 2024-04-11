@@ -11,8 +11,8 @@ using _4743_TranNhatAnhThuan_Buoi3.Models;
 namespace _4743_TranNhatAnhThuan_Buoi3.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240322063607_Tao_Bang_Product_Category_ProductImage")]
-    partial class Tao_Bang_Product_Category_ProductImage
+    [Migration("20240328061253_Tao_Database")]
+    partial class Tao_Database
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

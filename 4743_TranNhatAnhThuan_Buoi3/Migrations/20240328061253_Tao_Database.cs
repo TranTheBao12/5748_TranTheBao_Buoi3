@@ -5,7 +5,7 @@
 namespace _4743_TranNhatAnhThuan_Buoi3.Migrations
 {
     /// <inheritdoc />
-    public partial class Tao_Bang_Product_Category_ProductImage : Migration
+    public partial class Tao_Database : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
